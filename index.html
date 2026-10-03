@@ -120,6 +120,12 @@ body{background:radial-gradient(circle at 10% -5%,color-mix(in srgb,var(--pri) 2
 .mr{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bd);font-size:15px}
 .mr button{border:0;background:transparent;font-size:17px;padding:4px 8px}
 .set:nth-of-type(9) em{background:#6366f126}
+.ml2{position:relative;min-width:104px;text-align:center}.ml2 input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;padding:0;border:0;cursor:pointer}
+.dtw{position:relative;display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:13px 14px;margin-bottom:10px;font-weight:700;cursor:pointer}
+.dtw small{margin-inline-start:auto;color:var(--mut);font-weight:400;font-size:12px}
+.dtw input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;padding:0;border:0}
+.dr{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--bd);font-size:14px}
+.dh{display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin:14px 0 2px}
 </style>
 </head>
 <body>
@@ -133,7 +139,7 @@ body{background:radial-gradient(circle at 10% -5%,color-mix(in srgb,var(--pri) 2
 <div class="w">
   <div id="bn" class="bn" hidden></div>
   <div class="top"><div style="display:flex;align-items:center;gap:6px"><h1>💰 دفتر مصاريفي</h1><button id="th" class="tb"></button></div>
-    <div class="mn"><button id="nx">›</button><span id="ml"></span><button id="pv">‹</button></div></div>
+    <div class="mn"><button id="nx">›</button><span class="ml2"><span id="ml"></span><input type="month" id="mp"></span><button id="pv">‹</button></div></div>
   <div class="fch" id="fch"></div>
   <div class="hero" id="hero"><small>الباقي معاك</small><div class="big" id="sB">0</div>
     <div class="two"><div>⬇️ داخل<b id="sI">0</b></div><div>⬆️ منصرف<b id="sO">0</b></div></div>
@@ -161,11 +167,12 @@ body{background:radial-gradient(circle at 10% -5%,color-mix(in srgb,var(--pri) 2
 
 <div class="ov" id="ov"><div class="sh">
   <h3 id="sht"></h3>
+  <div class="chips" id="tt"><button data-t="i">⬇️ داخل</button><button data-t="o">⬆️ منصرف</button></div>
   <input class="amt" id="amt" type="number" inputmode="decimal" placeholder="0">
   <div class="chips q" id="qk"></div>
   <div class="chips" id="cc"></div><div class="c" style="margin:0 2px 4px">الملف:</div><div class="chips" id="fsel"></div><div id="bh" class="c" style="margin:-4px 2px 10px"></div>
   <input class="f" id="note" placeholder="">
-  <div class="chips q" id="dq"><button data-d="0">اليوم</button><button data-d="1">امبارح</button><button data-d="2">من يومين</button></div><input class="f" id="dt" type="date"><input class="f" id="rd" type="number" inputmode="numeric" min="1" max="31" placeholder="اليوم من الشهر اللي يتسجل فيه (1–31)" style="display:none">
+  <div class="chips q" id="dq"><button data-d="0">اليوم</button><button data-d="1">امبارح</button><button data-d="2">من يومين</button></div><label class="dtw"><span id="dtl"></span><small>اضغط للتغيير</small><input id="dt" type="date"></label><input class="f" id="rd" type="number" inputmode="numeric" min="1" max="31" placeholder="اليوم من الشهر اللي يتسجل فيه (1–31)" style="display:none">
   <button class="go" id="sv">حفظ</button><button class="go" id="dl" style="background:var(--out);margin-top:8px;display:none">🗑 مسح الحركة</button>
 </div></div>
 <div class="ov" id="ov2"><div class="sh"><h3 id="jh3">🤝 جمعية جديدة</h3>
@@ -182,6 +189,7 @@ body{background:radial-gradient(circle at 10% -5%,color-mix(in srgb,var(--pri) 2
   <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin-bottom:12px"><input type="checkbox" id="dlg" checked style="width:20px;margin:0"> سجّلها كمان في السجل (فلوس خرجت/دخلت فعلاً)</label>
   <button class="go" id="dsv">حفظ</button></div></div>
 <div class="ov" id="ov4"><div class="sh" id="sh4" style="max-height:85vh;overflow:auto"></div></div>
+<div class="ov" id="ov5"><div class="sh" style="max-height:85vh;overflow:auto"><div id="dtlc"></div><button class="go" id="dcl" style="background:var(--bg);color:var(--tx);border:1px solid var(--bd);margin-top:12px">إغلاق</button></div></div>
 <div class="tst" id="ts2"></div>
 
 <script>
@@ -210,7 +218,7 @@ let X=lx();
 function sx(){mem.x=X;try{localStorage.setItem("masrofy_x",JSON.stringify(X))}catch(e){}sv()}
 const addm=(m,n)=>{const t=(+m.slice(0,4))*12+(+m.slice(5)-1)+n;return Math.floor(t/12)+"-"+String(t%12+1).padStart(2,"0")};
 const mdiff=(a,b)=>(+b.slice(0,4)-+a.slice(0,4))*12+(+b.slice(5)-+a.slice(5));
-const mlb=m=>MN[+m.slice(5)-1]+" "+m.slice(0,4);
+const mlb=m=>MN[+m.slice(5)-1]+" ("+(+m.slice(5))+") "+m.slice(0,4);
 const fd=()=>cf=="all"?data:data.filter(r=>(r.f||X.files[0].id)==cf);
 const spent=(c,m)=>fd().filter(r=>r.type=="o"&&r.cat==c&&r.date.startsWith(m)).reduce((z,r)=>z+r.amount,0);
 function bh(){const L=X.bud[cat];if(type!="o"||!L||isRec){$("bh").textContent="";return}const S=spent(cat,today().slice(0,7));
@@ -267,38 +275,55 @@ function render(){fchips();
  const rows=flt=="a"?all:all.filter(r=>r.type==flt);
  let I=0,O=0;const ct={i:{},o:{}};
  all.forEach(r=>{r.type=="i"?I+=r.amount:O+=r.amount;ct[r.type][r.cat]=(ct[r.type][r.cat]||0)+r.amount});
- const [y,m]=mo.split("-"),B=I-O;$("ml").textContent=MN[m-1]+" "+y;
+ const [y,m]=mo.split("-"),B=I-O;$("ml").textContent="📅 "+MN[m-1]+" ("+(+m)+")"+(y!=today().slice(0,4)?" "+y:"");$("mp").value=mo;
  cnt($("sI"),I);cnt($("sO"),O);cnt($("sB"),B);
  $("hero").className="hero "+(B>0?"pos":B<0?"neg":"");
  $("pb").style.width=(I?Math.min(100,O/I*100):O?100:0)+"%";
  $("hm").textContent=!all.length?"سجّل أول حركة ليك في الشهر ده 👇":I?(B>=0?"صرفت "+Math.round(O/I*100)+"% من دخلك وفاضلك "+fmt(B):"صرفت أكتر من دخلك بـ "+fmt(-B)+" ⚠️"):"لسه مفيش دخل متسجل";
  const n=t=>all.filter(r=>r.type==t).length,on=f=>flt==f?"on":"";
  let h=`<div class="fl"><button data-f="a" class="${on("a")}">الكل (${all.length})</button><button data-f="i" class="${on("i")}">⬇️ داخل (${n("i")})</button><button data-f="o" class="${on("o")}">⬆️ منصرف (${n("o")})</button></div>`,d="",k=0;
- rows.forEach(r=>{if(r.date!=d){d=r.date;h+=`<div class="day">📅 ${d}</div>`}
+ rows.forEach(r=>{if(r.date!=d){d=r.date;h+=`<div class="day">📅 ${fdate(d,d.slice(0,4)!=today().slice(0,4))}</div>`}
   h+=`<div class="it" data-id="${r.id}" style="animation-delay:${Math.min(k++,10)*30}ms"><div class="ic" style="background:${col(r.cat)}26">${IC[r.cat]||"💵"}</div><div class="m"><div class="n">${esc(r.note||r.cat)}</div><div class="c" style="color:${col(r.cat)}">${esc(r.cat)}</div></div><div class="a ${r.type}">${r.type=="i"?"+":"−"}${fmt(r.amount)}</div></div>`});
  $("tl").innerHTML=h+(rows.length?'<div class="empty" style="padding:12px;font-size:12px">اضغط على أي حركة عشان تعدلها أو تمسحها ✏️</div>':'<div class="empty">📭<br>مفيش حركات هنا<br>دوس ＋ داخل أو － منصرف</div>');
  const T=sm=="o"?O:I,e=Object.entries(ct[sm]).sort((a,b)=>b[1]-a[1]),C=251.33;let off=0;
  let s=`<div class="fl"><button data-s="o" class="${sm=="o"?"on":""}">⬆️ المنصرف</button><button data-s="i" class="${sm=="i"?"on":""}">⬇️ الداخل</button></div>`;
  if(!e.length)s+='<div class="empty">📊<br>مفيش بيانات لسه</div>';
- else s+=`<svg class="dn" viewBox="0 0 100 100"><circle r="40" cx="50" cy="50" fill="none" style="stroke:var(--bd)" stroke-width="14"/><g transform="rotate(-90 50 50)">`+e.map(([k,v])=>{const l=v/T*C,a=`<circle class="arc" data-k="${esc(k)}" r="40" cx="50" cy="50" fill="none" stroke="${col(k)}" stroke-width="14" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-off}"/>`;off+=l;return a}).join("")+`</g><text id="dk" x="50" y="47" text-anchor="middle" style="font-size:6px;fill:var(--mut)">الإجمالي</text><text id="dv" x="50" y="59" text-anchor="middle" data-t="${fmt(T)}" style="font-size:11px;font-weight:800;fill:var(--tx)">${fmt(T)}</text></svg>`+
+ else s+=`<svg class="dn" viewBox="0 0 100 100"><circle r="40" cx="50" cy="50" fill="none" style="stroke:var(--bd)" stroke-width="14"/><g transform="rotate(-90 50 50)">`+e.map(([k,v])=>{const l=v/T*C,a=`<circle class="arc" data-k="${esc(k)}" r="40" cx="50" cy="50" fill="none" stroke="${col(k)}" stroke-width="14" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-off}"/>`;off+=l;return a}).join("")+`</g><text id="dk" x="50" y="47" text-anchor="middle" style="font-size:6px;fill:var(--mut)">الإجمالي</text><text id="dv" x="50" y="59" text-anchor="middle" data-t="${fmt(T)}" style="font-size:11px;font-weight:800;fill:var(--tx)">${fmt(T)}</text></svg><div class="c" style="text-align:center;margin:2px 0 8px">اضغط على أي جزء من الدايرة أو أي تصنيف عشان تشوف الصرف بالتفصيل</div><button class="go" id="dall" style="margin-bottom:8px;background:var(--bg);color:var(--tx);border:1px solid var(--bd)">📋 تفاصيل كل ${sm=="o"?"المصروفات":"الداخل"}</button>`+
   e.map(([k,v])=>{const p=Math.round(v/T*100);return `<div class="cr" data-k="${esc(k)}" data-v="${v}"><div><span><i class="dt" style="background:${col(k)}"></i>${IC[k]||""} ${esc(k)}</span><b>${fmt(v)} <small style="color:var(--mut)">${p}%</small></b></div><div class="t"><i style="width:${p}%;background:${col(k)}"></i></div></div>`}).join("");
  $("ts").innerHTML=s;pick.k=null;
  const lb=gk(KB,"b");$("bks").textContent=lb?"آخر نسخة: "+lb.slice(0,10):"لسه ما عملتش نسخة — اعمل واحدة!";
  $("lks").textContent=gk(KL,"l")?"شغال (PIN"+(gk(KL+"_c","lc")?" + بصمة":"")+") — دوس لإيقافه":"مش مفعّل — دوس للتفعيل";
  rplan();
 }
-document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
- document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x==b));
- ["l","s","p","g"].forEach(t=>$("t"+t).hidden=t!=b.dataset.t)});
+let curT="l",depth=0,ign=0,byPop=false;const tabStack=[],TB=[...document.querySelectorAll(".tabs button")],TORD=["l","s","p","g"];
+const hpush=()=>{try{history.pushState({a:1},"");depth++}catch(e){}};
+function showTab(t){curT=t;TB.forEach(x=>x.classList.toggle("on",x.dataset.t==t));TORD.forEach(k=>$("t"+k).hidden=k!=t);scrollTo(0,0)}
+function goTab(t){if(t==curT)return;tabStack.push(curT);showTab(t);hpush()}
+TB.forEach(b=>b.onclick=()=>goTab(b.dataset.t));
+const OVL=["ov","ov2","ov3","ov4","ov5"].map(i=>$(i)),ost=new Map(OVL.map(o=>[o,false]));
+const mob=new MutationObserver(ms=>ms.forEach(m=>{const o=m.target,on=o.classList.contains("on");if(on===ost.get(o))return;ost.set(o,on);
+ if(on)hpush();else if(byPop)byPop=false;else if(depth>0){depth--;ign++;history.back()}}));
+OVL.forEach(o=>mob.observe(o,{attributes:true,attributeFilter:["class"]}));
+addEventListener("popstate",()=>{if(ign>0){ign--;return}if(depth>0)depth--;
+ const o=[...OVL].reverse().find(x=>x.classList.contains("on"));
+ if(o){byPop=true;o.classList.remove("on");return}
+ const t=tabStack.pop();if(t)showTab(t)});
 $("nx").onclick=()=>shift(-1);$("pv").onclick=()=>shift(1);
 function shift(n){let[y,m]=mo.split("-").map(Number);m+=n;if(m<1){m=12;y--}if(m>12){m=1;y++}mo=y+"-"+String(m).padStart(2,"0");render()}
 
-function open(t,rm){recEd=null;isRec=!!rm;eid=null;$("dl").style.display="none";$("dq").style.display=$("dt").style.display=rm?"none":"";$("rd").style.display=rm?"block":"none";type=t;cat=CT[t][0][1];$("sht").textContent=t=="i"?"⬇️ فلوس داخلة":"⬆️ مصروف";
+function open(t,rm){recEd=null;isRec=!!rm;eid=null;$("dl").style.display="none";$("dq").style.display=$("dt").parentElement.style.display=rm?"none":"";$("rd").style.display=rm?"block":"none";type=t;cat=CT[t][0][1];$("sht").textContent=t=="i"?"⬇️ فلوس داخلة":"⬆️ مصروف";
  $("sht").style.color=$("sv").style.background=t=="i"?"var(--in)":"var(--out)";
  $("note").placeholder=t=="i"?"جالك منين؟ (مرتب / عميل ...)":"صرفتها في إيه؟";
  $("cc").innerHTML=CT[t].map(([e,n],i)=>`<button class="${i?"":"on"}" data-c="${n}" style="--c:${col(n)}">${e} ${n}</button>`).join("");
+ [...$("tt").children].forEach(x=>x.classList.toggle("on",x.dataset.t==t));
  $("qk").innerHTML=[50,100,200,500,1000].map(v=>`<button data-q="${v}">${v}</button>`).join("");
  $("amt").value="";$("note").value="";$("dt").value=today();$("ov").classList.add("on");$("rd").value="";sf=cf=="all"?X.files[0].id:cf;fs();bh();setTimeout(()=>$("amt").focus(),150)}
+function sty(t){type=t;cat=CT[t][0][1];$("sht").style.color=$("sv").style.background=t=="i"?"var(--in)":"var(--out)";
+ if(!eid&&!isRec)$("sht").textContent=t=="i"?"⬇️ فلوس داخلة":"⬆️ مصروف";
+ $("note").placeholder=t=="i"?"جالك منين؟ (مرتب / عميل ...)":"صرفتها في إيه؟";
+ $("cc").innerHTML=CT[t].map(([e,n],i)=>`<button class="${i?"":"on"}" data-c="${n}" style="--c:${col(n)}">${e} ${n}</button>`).join("");
+ [...$("tt").children].forEach(x=>x.classList.toggle("on",x.dataset.t==t));bh()}
+$("tt").onclick=e=>{const b=e.target.closest("button");if(b&&b.dataset.t!=type){sty(b.dataset.t);vib()}};
 $("ai").onclick=()=>open("i");$("ao").onclick=()=>open("o");
 $("ov").onclick=e=>{if(e.target==$("ov"))$("ov").classList.remove("on")};
 $("cc").onclick=e=>{const b=e.target.closest("button");if(!b)return;cat=b.dataset.c;[...$("cc").children].forEach(x=>x.classList.toggle("on",x==b));bh();vib()};
@@ -373,9 +398,14 @@ $("th").onclick=()=>{theme(document.documentElement.dataset.theme=="dark"?"light
 $("dq").onclick=e=>{const b=e.target.closest("button");if(b){$("dt").value=ago(+b.dataset.d);vib()}};
 $("dl").onclick=()=>{if(recEd&&confirm("تمسح الحركة المتكررة دي؟ (اللي اتسجل قبل كده هيفضل)")){X.tomb.push(String(recEd));X.rec=X.rec.filter(x=>x.id!=recEd);sx();recEd=null;$("ov").classList.remove("on");render();return}if(eid&&confirm("تمسح الحركة دي؟")){X.tomb.push(String(eid));data=data.filter(r=>r.id!=eid);sx();$("ov").classList.remove("on");toast("🗑 اتمسحت");render()}};
 $("ts").onclick=e=>{const g=e.target.closest(".fl button");if(g){sm=g.dataset.s;render();return}
- const el=e.target.closest(".cr,.arc");if(el)pick(el.dataset.k)};
-let swx=null;document.addEventListener("touchstart",e=>swx=e.touches[0].clientX,{passive:true});
-document.addEventListener("touchend",e=>{if(swx==null||$("ov").classList.contains("on")||$("lock").classList.contains("on"))return;const d=e.changedTouches[0].clientX-swx;swx=null;if(Math.abs(d)>90)shift(d>0?-1:1)},{passive:true});
+ const el=e.target.closest(".cr,.arc");if(el){showDet(el.dataset.k);return}if(e.target.closest("#dall,svg.dn"))showDet(null)};
+let sx0=null,sy0=0,sxEl=null;
+document.addEventListener("touchstart",e=>{const t=e.touches[0];sx0=t.clientX;sy0=t.clientY;sxEl=e.target},{passive:true});
+document.addEventListener("touchend",e=>{if(sx0==null)return;const t=e.changedTouches[0],dx=t.clientX-sx0,dy=t.clientY-sy0;sx0=null;
+ if(OVL.some(o=>o.classList.contains("on"))||$("lock").classList.contains("on"))return;
+ if(sxEl&&sxEl.closest&&sxEl.closest("#fch,.fl,input,textarea,select,.dn"))return;
+ if(Math.abs(dx)<80||Math.abs(dx)<Math.abs(dy)*2)return;
+ const n=TORD.indexOf(curT)+(dx<0?1:-1);if(n>=0&&n<TORD.length)goTab(TORD[n])},{passive:true});
 let dk="out",cf=gk("masrofy_cf","cf")||"all",sf="",recEd=null,jed=null,ded=null;
 function applyCats(){if(!X.files||!X.files.length)X.files=dx().files;if(X.cats){CT.i=X.cats.i;CT.o=X.cats.o}Object.values(CT).flat().forEach(([e,n])=>IC[n]=e)}
 function fchips(){applyCats();if(cf!="all"&&!X.files.some(f=>f.id==cf))cf="all";
@@ -453,6 +483,25 @@ $("gd").onclick=async()=>{let c=gk("masrofy_cid","cid");
  if(!c){c=(prompt("الصق الـ Client ID بتاع Google (شكله: xxxx.apps.googleusercontent.com)")||"").trim();if(!c)return;sk("masrofy_cid","cid",c);gC=null}
  await gsync(true);gstat()};
 $("gx").onclick=()=>{if(confirm("تفصل الربط وتمسح الـ Client ID؟ (الملف هيفضل في Drive)")){[["masrofy_cid","cid"],["masrofy_gd","gd"],["masrofy_gdid","gid"],["masrofy_gdlast","gl"]].forEach(k=>sk(k[0],k[1],null));gT=null;gC=null;gstat();toast("اتفصل")}};
+const DN=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+function fdate(d,y){const t=new Date(d+"T00:00:00");return DN[t.getDay()]+" "+t.getDate()+" "+MN[t.getMonth()]+(y?" "+t.getFullYear():"")}
+function dtShow(){const v=$("dt").value;$("dtl").textContent="📅 "+(v?fdate(v,1)+(v==today()?" (النهارده)":v==ago(1)?" (امبارح)":""):"اختار التاريخ")}
+{const vd0=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value");Object.defineProperty($("dt"),"value",{get(){return vd0.get.call(this)},set(v){vd0.set.call(this,v);dtShow()}})}
+$("dt").addEventListener("change",dtShow);dtShow();
+$("mp").onchange=()=>{if($("mp").value){mo=$("mp").value;render()}};
+function showDet(k){const rs=fd().filter(r=>r.date.startsWith(mo)&&r.type==sm);if(!rs.length)return;
+ const T=rs.reduce((z,r)=>z+r.amount,0),tl=sm=="o"?"المصروفات":"الداخل",sum=a=>a.reduce((z,r)=>z+r.amount,0);
+ const lines=a=>{const m={};a.forEach(r=>{const n=(r.note||"").replace(/ 🔁$/,"").trim()||"بدون بيان";(m[n]=m[n]||{a:0,c:0}).a+=r.amount;m[n].c++});
+  return Object.entries(m).sort((x,y)=>y[1].a-x[1].a).map(([n,v])=>`<div class="dr"><span>${esc(n)}${v.c>1?` <small style="color:var(--mut)">(${v.c}×)</small>`:""}</span><b>${fmt(v.a)}</b></div>`).join("")};
+ let h=`<h3>${k?(IC[k]||"")+" "+esc(k):"📋 تفاصيل "+tl}</h3>`;
+ if(k){const a=rs.filter(r=>r.cat==k),t=sum(a);
+  h+=`<div class="dsum"><div>إجمالي ${esc(k)}<b>${fmt(t)}</b></div><div>من إجمالي ${tl}<b>${Math.round(t/T*100)}%</b></div></div><div class="dh"><span>${sm=="o"?"اتصرف على إيه؟":"جالك منين؟"}</span></div>`+lines(a)}
+ else{h+=`<div class="dsum"><div>إجمالي ${tl}<b>${fmt(T)}</b></div><div>عدد الحركات<b>${rs.length}</b></div></div>`;
+  const cs={};rs.forEach(r=>(cs[r.cat]=cs[r.cat]||[]).push(r));
+  Object.entries(cs).map(([c,a])=>[c,a,sum(a)]).sort((x,y)=>y[2]-x[2]).forEach(([c,a,t])=>{h+=`<div class="dh"><span>${IC[c]||"💵"} ${esc(c)}</span><span style="color:${col(c)}">${fmt(t)} • ${Math.round(t/T*100)}%</span></div>`+lines(a)})}
+ $("dtlc").innerHTML=h;$("ov5").classList.add("on")}
+$("dcl").onclick=()=>$("ov5").classList.remove("on");
+$("ov5").onclick=e=>{if(e.target==$("ov5"))$("ov5").classList.remove("on")};
 const KA="masrofy_ab",KD="masrofy_abday",PL=[["#6366f1","#8b5cf6"],["#2563eb","#06b6d4"],["#059669","#84cc16"],["#db2777","#f97316"],["#ea580c","#f59e0b"],["#475569","#0f172a"]];
 function pal(i,k){const[a,b]=PL[i],st=document.documentElement.style;st.setProperty("--pri",a);st.setProperty("--pri2",b);st.setProperty("--hero","linear-gradient(135deg,"+a+","+b+")");
  $("pal").innerHTML=PL.map((p,j)=>`<i data-i="${j}" class="${j==i?"on":""}" style="background:linear-gradient(135deg,${p[0]},${p[1]})"></i>`).join("");
